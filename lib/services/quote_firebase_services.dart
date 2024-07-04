@@ -9,9 +9,9 @@ class QuoteFirebaseServices {
   }
 
   Future<void> saveOrUpdateQuoteInFirestore(Map<String, dynamic> quote) async {
-    print(quote);
     QuerySnapshot querySnapshot = await _quoteCollection
-        .where('date', isEqualTo: DateTime.now().toIso8601String().substring(0, 10))
+        .where('date',
+            isEqualTo: DateTime.now().toIso8601String().substring(0, 10))
         .get();
 
     if (querySnapshot.docs.isEmpty) {

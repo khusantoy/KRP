@@ -11,7 +11,7 @@ class _PomodoroScreenState extends State<PomodoroScreen> {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text("Pomodoro"),
+      child: Text("You will receive a notification to rest every 2 hours"),
     );
   }
 }

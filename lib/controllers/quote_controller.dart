@@ -11,6 +11,15 @@ class QuoteController with ChangeNotifier {
     yield* _quoteFirebaseServices.getQuote();
   }
 
+  Future<List<String>> fetchQuotes() async {
+    List<String> quotes = [];
+    QuerySnapshot snapshot = await _quoteFirebaseServices.getQuote().first;
+    for (var doc in snapshot.docs) {
+      quotes.add(doc['quote']);
+    }
+    return quotes;
+  }
+
   Future<Map<String, dynamic>> getQuote() async {
     return await _quoteHttpServices.getQuote();
   }

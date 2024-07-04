@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:krp/controllers/quote_controller.dart';
@@ -29,6 +31,11 @@ class _MotivationScreenState extends State<MotivationScreen> {
         }
 
         if (snapshot.hasError) {
+          if (snapshot.error.toString().contains("SocketException")) {
+            return const Center(
+              child: Text("Connect to the internet"),
+            );
+          }
           return Center(
             child: Text("Error fetching quote: ${snapshot.error}"),
           );
@@ -123,6 +130,14 @@ class _MotivationScreenState extends State<MotivationScreen> {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: const Text(
+                        "Every day, you will receive a new quote notification at 8 A.M."),
+                  )
                 ],
               ),
             );

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:krp/controllers/quote_controller.dart';
 import 'package:timezone/data/latest_all.dart' as tzl;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -130,8 +131,13 @@ class LocalNotificationsService {
   //   );
   // }
 
+  static Future<void> showScheduledNotification() async {
+    final quoteController = QuoteController();
 
-  static void showScheduledNotification() async {
+    List<String> quotes = await quoteController.fetchQuotes();
+
+    // Format the quotes as needed (e.g., join them into a single string)
+    String quotesBody = quotes.join("\n");
     // android va ios uchun qanday
     // turdagi xabarlarni ko'rsatish kerakligni aytamiz
     const androidDetails = AndroidNotificationDetails(
@@ -145,8 +151,8 @@ class LocalNotificationsService {
     );
 
     const iosDetails = DarwinNotificationDetails(
-      // sound: "notification.aiff",
-    );
+        // sound: "notification.aiff",
+        );
 
     const notificationDetails = NotificationDetails(
       android: androidDetails,
@@ -157,12 +163,50 @@ class LocalNotificationsService {
     await _localNotification.zonedSchedule(
       0,
       "Daily Quote",
-      "Quote body",
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+      quotesBody,
+      getTime(),
       notificationDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       payload: "Salom",
+      matchDateTimeComponents: DateTimeComponents.time,
     );
+  }
+
+  static tz.TZDateTime getTime() {
+    tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    return tz.TZDateTime(tz.local, now.year, now.month, now.day + 1, 7, 59, 0);
+  }
+
+  static Future<void> scheduleTodoNotification(
+      String id, String title, DateTime time) async {
+    const androidDetails = AndroidNotificationDetails(
+      "todoChannelId",
+      "todoChannelName",
+      importance: Importance.max,
+      priority: Priority.max,
+      playSound: true,
+    );
+
+    const iosDetails = DarwinNotificationDetails();
+
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    await _localNotification.zonedSchedule(
+      int.parse(id.hashCode.toString().substring(0, 9)),
+      "Todo Reminder",
+      title,
+      tz.TZDateTime.from(time, tz.local),
+      notificationDetails,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+
+  static Future<void> cancelTodoNotification(String id) async {
+    await _localNotification.cancel(int.parse(id.hashCode.toString().substring(0, 9)));
   }
 }
