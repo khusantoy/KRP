@@ -58,7 +58,8 @@ class _MotivationScreenState extends State<MotivationScreen> {
               );
             }
 
-            final quote = Quote.fromQuerySnapshot(streamSnapshot.data!.docs.first);
+            final quote =
+                Quote.fromQuerySnapshot(streamSnapshot.data!.docs.first);
 
             return Center(
               child: Column(

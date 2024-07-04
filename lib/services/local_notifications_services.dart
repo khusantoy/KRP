@@ -86,8 +86,54 @@ class LocalNotificationsService {
     await _localNotification.initialize(notificationInit);
   }
 
-  static void showNotification() async {
-    // Android iOS uchun qanday turdagi xabarlarni ko'rsatish kerakligini aytamiz
+  // static void showNotification() async {
+  //   // Android iOS uchun qanday turdagi xabarlarni ko'rsatish kerakligini aytamiz
+  //   const androidDetails = AndroidNotificationDetails(
+  //     "goodChannelId",
+  //     "goodChannelName",
+  //     importance: Importance.max,
+  //     priority: Priority.max,
+  //     playSound: true,
+  //     // sound: RawResourceAndroidNotificationSound("notification"),
+  //     actions: [
+  //       AndroidNotificationAction("id_1", "Action 1"),
+  //       AndroidNotificationAction("id_2", "Action 2"),
+  //       AndroidNotificationAction("id_3", "Action 3"),
+  //     ],
+  //   );
+
+  //   const iosDetails = DarwinNotificationDetails(
+  //     // sound: "notification.aiff",
+  //     categoryIdentifier: "demoCategory",
+  //   );
+
+  //   const notificationDetails = NotificationDetails(
+  //     android: androidDetails,
+  //     iOS: iosDetails,
+  //   );
+
+  //   // show funksiyasi orqali xabarni ko'rsatamiz
+  //   // await _localNotification.show(
+  //   //   0,
+  //   //   "Birinchi notification",
+  //   //   "Body text",
+  //   //   notificationDetails,
+  //   // );
+
+  //   await _localNotification.periodicallyShowWithDuration(
+  //     0,
+  //     "Birinchi NOTIFICATION",
+  //     "Salom sizga \$1,000,000 pul tushdi. SMS kodni ayting!",
+  //     const Duration(minutes: 1),
+  //     notificationDetails,
+  //     payload: "Salom",
+  //   );
+  // }
+
+
+  static void showScheduledNotification() async {
+    // android va ios uchun qanday
+    // turdagi xabarlarni ko'rsatish kerakligni aytamiz
     const androidDetails = AndroidNotificationDetails(
       "goodChannelId",
       "goodChannelName",
@@ -95,16 +141,11 @@ class LocalNotificationsService {
       priority: Priority.max,
       playSound: true,
       // sound: RawResourceAndroidNotificationSound("notification"),
-      actions: [
-        AndroidNotificationAction("id_1", "Action 1"),
-        AndroidNotificationAction("id_2", "Action 2"),
-        AndroidNotificationAction("id_3", "Action 3"),
-      ],
+      ticker: "Ticker",
     );
 
     const iosDetails = DarwinNotificationDetails(
       // sound: "notification.aiff",
-      categoryIdentifier: "demoCategory",
     );
 
     const notificationDetails = NotificationDetails(
@@ -112,12 +153,16 @@ class LocalNotificationsService {
       iOS: iosDetails,
     );
 
-    // show funksiyasi orqali xabarni ko'rsatamiz
-    await _localNotification.show(
+    // show funksiyasi orqali darhol xabarnoma ko'rsatamiz
+    await _localNotification.zonedSchedule(
       0,
-      "Birinchi notification",
-      "Body text",
+      "Daily Quote",
+      "Quote body",
+      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
       notificationDetails,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: "Salom",
     );
   }
 }
